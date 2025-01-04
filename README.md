@@ -23,3 +23,5 @@ odejmowanie - [commit](https://github.com/apetor56/ios/commit/0858ea4f5df48e8981
 ❌ 4.5 zmiana statusu zadania (w tym modyfikacja struktury)
 
 ❌ 5.0 wyświetlanie statusu na liście zadań
+
+https://github.com/user-attachments/assets/08c1774e-0524-40d2-beae-15c1b6270697
