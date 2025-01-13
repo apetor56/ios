@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  ShoppingList
-//
-//  Created by user252223 on 1/5/25.
-//
-
 import SwiftUI
 import CoreData
 
@@ -12,61 +5,55 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \ProductEntity.name, ascending: true)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var products: FetchedResults<ProductEntity>
+
+    @State private var isShowingAddProductView = false
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+                ForEach(products) { product in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(product.name ?? "Unnamed Product")
+                                .font(.headline)
+                        }
+                        Spacer()
+                        VStack(alignment: .trailing) {
+                            Text("Count: \(product.count)")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteProducts)
             }
+            .navigationTitle("Products")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { isShowingAddProductView = true }) {
+                        Label("Add Product", systemImage: "plus")
                     }
                 }
             }
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            .sheet(isPresented: $isShowingAddProductView) {
+                AddProductView(isPresented: $isShowingAddProductView)
+                    .environment(\.managedObjectContext, viewContext)
             }
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteProducts(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
+            offsets.map { products[$0] }.forEach(viewContext.delete)
             do {
                 try viewContext.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
@@ -74,13 +61,52 @@ struct ContentView: View {
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
+struct AddProductView: View {
+    @Binding var isPresented: Bool
+    @Environment(\.managedObjectContext) private var viewContext
 
-#Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    @State private var name: String = ""
+    @State private var count: String = ""
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Product Details")) {
+                    TextField("Name", text: $name)
+                    TextField("Count", text: $count)
+                        .keyboardType(.numberPad)
+                }
+            }
+            .navigationTitle("Add Product")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        isPresented = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        addProduct()
+                        isPresented = false
+                    }
+                    .disabled(name.isEmpty || count.isEmpty)
+                }
+            }
+        }
+    }
+
+    private func addProduct() {
+        withAnimation {
+            let newProduct = ProductEntity(context: viewContext)
+            newProduct.name = name
+            newProduct.count = Int64(count) ?? 0
+
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
 }
