@@ -5,30 +5,34 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \ProductEntity.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)],
         animation: .default)
-    private var products: FetchedResults<ProductEntity>
+    private var categories: FetchedResults<CategoryEntity>
 
     @State private var isShowingAddProductView = false
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(products) { product in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(product.name ?? "Unnamed Product")
-                                .font(.headline)
-                        }
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                            Text("Count: \(product.count)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                ForEach(categories) { category in
+                    Section(header: Text(category.name ?? "Unnamed Category")) {
+                        if let products = category.productRelation as? Set<ProductEntity> {
+                            ForEach(Array(products).sorted(by: { $0.name ?? "" < $1.name ?? "" })) { product in
+                                HStack {
+                                    Text(product.name ?? "Unnamed Product")
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("Count: \(product.count)")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .onDelete { offsets in
+                                deleteProducts(in: category, at: offsets)
+                            }
                         }
                     }
                 }
-                .onDelete(perform: deleteProducts)
             }
             .navigationTitle("Products")
             .toolbar {
@@ -45,18 +49,47 @@ struct ContentView: View {
                 AddProductView(isPresented: $isShowingAddProductView)
                     .environment(\.managedObjectContext, viewContext)
             }
+            .onAppear {
+                createDefaultCategories()
+            }
         }
     }
 
-    private func deleteProducts(offsets: IndexSet) {
+    private func deleteProducts(in category: CategoryEntity, at offsets: IndexSet) {
         withAnimation {
-            offsets.map { products[$0] }.forEach(viewContext.delete)
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            if let products = category.productRelation as? Set<ProductEntity> {
+                let sortedProducts = Array(products).sorted(by: { $0.name ?? "" < $1.name ?? "" })
+                offsets.map { sortedProducts[$0] }.forEach { product in
+                    category.removeFromProductRelation(product)
+                    viewContext.delete(product)
+                }
+                do {
+                    try viewContext.save()
+                } catch {
+                    let nsError = error as NSError
+                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                }
             }
+        }
+    }
+
+    private func createDefaultCategories() {
+        let categoryNames = ["Elektronika", "Książki", "Inne"]
+        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        do {
+            let existingCategories = try viewContext.fetch(fetchRequest)
+            for name in categoryNames {
+                if !existingCategories.contains(where: { $0.name == name }) {
+                    let newCategory = CategoryEntity(context: viewContext)
+                    newCategory.name = name
+                }
+            }
+            if viewContext.hasChanges {
+                try viewContext.save()
+            }
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
 }
@@ -65,8 +98,14 @@ struct AddProductView: View {
     @Binding var isPresented: Bool
     @Environment(\.managedObjectContext) private var viewContext
 
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)],
+        animation: .default)
+    private var categories: FetchedResults<CategoryEntity>
+
     @State private var name: String = ""
     @State private var count: String = ""
+    @State private var selectedCategory: CategoryEntity?
 
     var body: some View {
         NavigationView {
@@ -75,6 +114,13 @@ struct AddProductView: View {
                     TextField("Name", text: $name)
                     TextField("Count", text: $count)
                         .keyboardType(.numberPad)
+                }
+                Section(header: Text("Category")) {
+                    Picker("Select Category", selection: $selectedCategory) {
+                        ForEach(categories) { category in
+                            Text(category.name ?? "Unnamed Category").tag(category as CategoryEntity?)
+                        }
+                    }
                 }
             }
             .navigationTitle("Add Product")
@@ -89,7 +135,7 @@ struct AddProductView: View {
                         addProduct()
                         isPresented = false
                     }
-                    .disabled(name.isEmpty || count.isEmpty)
+                    .disabled(name.isEmpty || count.isEmpty || selectedCategory == nil)
                 }
             }
         }
@@ -100,7 +146,7 @@ struct AddProductView: View {
             let newProduct = ProductEntity(context: viewContext)
             newProduct.name = name
             newProduct.count = Int64(count) ?? 0
-
+            selectedCategory?.addToProductRelation(newProduct)
             do {
                 try viewContext.save()
             } catch {
