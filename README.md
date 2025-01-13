@@ -12,6 +12,8 @@ odejmowanie - [commit](https://github.com/apetor56/ios/commit/0858ea4f5df48e8981
 
 ❌ 5.0 Wersja ma się skalować na tablet
 
+https://github.com/user-attachments/assets/765b6535-fe51-4ef4-9950-6233e8b50396
+
 [**2. Lista zadań**](TaskList/)
 
 ✅ 3.0 wyświetla listę z góry określonych zadań (ArrayList) - [commit](https://github.com/apetor56/ios/commit/da4aaacb056ca75fa0b69b2cdb50eca0d3b2908a)
