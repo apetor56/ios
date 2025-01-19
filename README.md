@@ -41,3 +41,19 @@ https://github.com/user-attachments/assets/08c1774e-0524-40d2-beae-15c1b6270697
 ❌ 5.0 dodanie więcej niż jeden produkt tego samego typu do koszyka
 
 https://github.com/user-attachments/assets/5997d208-0278-43ab-92c4-c7a098207f7a
+
+[**4. Sieć**](/Network)
+
+✅ 3.0 pobieranie produktów oraz kategorii z aplikacji serwerowej - [commit](https://github.com/apetor56/ios/commit/eb3930c05b7b7e1e347a759903ccd8bb8c764eab)
+
+✅ 3.5 zapis danych lokalnie (CoreData) - [commit](https://github.com/apetor56/ios/commit/eb3930c05b7b7e1e347a759903ccd8bb8c764eab)
+
+❌ 4.0 pobieranie dodatkowo zamówień (minimum 5 pól, w tym jedna relacja)
+
+❌ 4.5 wyświetlanie produktów oraz ich kategorii na dwóch osobnych listach
+
+❌ 5.0 dodawanie produktów z poziomu aplikacji mobilnej
+
+https://github.com/user-attachments/assets/fb19672d-0b72-49d0-a18b-f5d4d6186474
+
+
