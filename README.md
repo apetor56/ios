@@ -56,7 +56,7 @@ https://github.com/user-attachments/assets/5997d208-0278-43ab-92c4-c7a098207f7a
 
 https://github.com/user-attachments/assets/fb19672d-0b72-49d0-a18b-f5d4d6186474
 
-[**5 Oauth**](/Oauth)
+[**5. Oauth**](/Oauth)
 
 ✅ 3.0 logowanie przez aplikację serwerową - [commit](https://github.com/apetor56/ios/commit/c1b9b46438c0af595d5b0871057aca9c29099a5c)
 
@@ -69,3 +69,17 @@ https://github.com/user-attachments/assets/fb19672d-0b72-49d0-a18b-f5d4d6186474
 ❌ 5.0 zapisywanie danych logowania OAuth2 po stronie serwera
 
 https://github.com/user-attachments/assets/d5c7ae08-4cc4-4863-bc9a-71f928b2ee39
+
+[**6. Płatności**](/Payments)
+
+✅ 3.0 formularz płatności oraz mockowanie przez aplikację serwerową - [commit](https://github.com/apetor56/ios/commit/296fb1bfd6d95f42b8750c91fb1c33c10f29aaa0)
+
+❌ 3.5 model płatności lokalnie
+
+❌ 4.0 lista zakupionych (opłaconych) produktów + model
+
+❌ 4.5 wdrożenie stripe'a
+
+❌ 5.0 dodanie skanowania kart
+
+https://github.com/user-attachments/assets/582be3af-d6ba-4276-a47d-2891e2e30485
