@@ -56,4 +56,16 @@ https://github.com/user-attachments/assets/5997d208-0278-43ab-92c4-c7a098207f7a
 
 https://github.com/user-attachments/assets/fb19672d-0b72-49d0-a18b-f5d4d6186474
 
+[**5 Oauth**](/Oauth)
 
+✅ 3.0 logowanie przez aplikację serwerową - [commit](https://github.com/apetor56/ios/commit/c1b9b46438c0af595d5b0871057aca9c29099a5c)
+
+❌ 3.5 rejestracja przez aplikację serwerową
+
+❌ 4.0 logowanie via Google OAuth2
+
+❌ 4.5 logowanie via Facebook lub Github OAuth2
+
+❌ 5.0 zapisywanie danych logowania OAuth2 po stronie serwera
+
+https://github.com/user-attachments/assets/d5c7ae08-4cc4-4863-bc9a-71f928b2ee39
