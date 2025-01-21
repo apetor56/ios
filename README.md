@@ -83,3 +83,17 @@ https://github.com/user-attachments/assets/d5c7ae08-4cc4-4863-bc9a-71f928b2ee39
 ❌ 5.0 dodanie skanowania kart
 
 https://github.com/user-attachments/assets/582be3af-d6ba-4276-a47d-2891e2e30485
+
+[**7. Testy**](/Tests)
+
+✅ 3.0 stworzyć 30 asercji testów funkcjonalnych - [commit](https://github.com/apetor56/ios/commit/c02557e3c576af4effb64fa21f6f492b44f358ec)
+
+❌ 3.5 stworzyć dodatkowo 20 asercji testów jednostkowych
+
+❌ 4.0 stworzyć mocki modelu produktów
+
+❌ 4.5 stworzyć mocki modelu kategorii
+
+❌ 5.0 dodać fixturki
+
+https://github.com/user-attachments/assets/344039f6-d120-476a-85b1-3c78fba02149
